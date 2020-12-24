@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: comments-ingress-srv
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    - host: api.comments.com
+      http:
+        paths:
+          - path: /posts/(.+)/comments
+            pathType: Prefix
+            backend:
+              service:
+                name: comments-clusterip-srv
+                port:
+                  number: 4001

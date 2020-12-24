@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: query-ingress-srv
+spec:
+  rules:
+    - host: api.query.com
+      http:
+        paths:
+          - path: /posts
+            pathType: Prefix
+            backend:
+              service:
+                name: query-clusterip-srv
+                port:
+                  number: 4002
