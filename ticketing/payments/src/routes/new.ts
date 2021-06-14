@@ -24,7 +24,6 @@ router.post(
       throw new NotFoundError();
     }
 
-    console.log(order.id, req.currentUser?.id);
     if (order.userId !== req.currentUser?.id) {
       throw new NotAuthorizedError();
     }
@@ -32,6 +31,10 @@ router.post(
 
     if (order.status === OrderStatus.Canceled) {
       throw new BadRequestError('Cannot pay for a cancelled order');
+    }
+
+    if (order.status === OrderStatus.Complete) {
+      throw new BadRequestError('Cannot pay for a completed order');
     }
 
     const stripeCharge = await stripe.charges.create({
@@ -46,6 +49,9 @@ router.post(
     });
 
     await payment.save();
+
+    order.status = OrderStatus.Complete;
+    order.save();
 
     await new PaymentCreatedPublisher(natsWrapper.client).publish({
       id: payment.id,

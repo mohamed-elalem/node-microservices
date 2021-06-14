@@ -8,16 +8,19 @@ const AppComponent = ({ Component, pageProps, currentUser }) => {
   return (
     <React.Fragment>
       <Header currentUser={currentUser} />
-      <Component { ...pageProps} currentUser={currentUser} />
+      <div className="container">
+        <Component { ...pageProps} currentUser={currentUser} />
+      </div>
     </React.Fragment>
   );
 };
 
 AppComponent.getInitialProps = async (appContext) => {
-  const { data } = await buildClient(appContext.ctx).get('/api/users/currentuser');
+  const client = await buildClient(appContext.ctx);
+  const { data } = await client.get('/api/users/currentuser');
   let pageProps = {};
   if (appContext.Component.getInitialProps) {
-    pageProps = await appContext.Component.getInitialProps(appContext.ctx);
+    pageProps = await appContext.Component.getInitialProps(appContext.ctx, client, data.currentUser);
   }
   return {
     pageProps,

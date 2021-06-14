@@ -4,7 +4,9 @@ export default ({ currentUser }) => {
   const links = [
     !currentUser && { label: 'Sign Up', href: '/auth/signup' },
     !currentUser && { label: 'Sign In', href: '/auth/signin'},
-    currentUser && { label: 'Sign Out', href: '/auth/signout'}
+    currentUser && { label: 'Sign Out', href: '/auth/signout'},
+    currentUser && { label: 'My Orders', href: '/orders' },
+    currentUser && { label: 'Sell tickets', href: '/tickets/new' }
   ].filter(link => link)
   .map(({ label, href }) => (
     <li key={href} className="nav-item">
